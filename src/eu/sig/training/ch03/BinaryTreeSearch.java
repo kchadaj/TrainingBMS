@@ -1,8 +1,5 @@
 package eu.sig.training.ch03;
 
-import eu.sig.training.ch03.TreeException;
-import eu.sig.training.ch03.BinaryTreeNode;
-
 public class BinaryTreeSearch {
 
     // tag::calculateDepth[]
@@ -16,16 +13,16 @@ public class BinaryTreeSearch {
         } else {
             if (nodeValue < node.getValue()) {
                 BinaryTreeNode<Integer> left = node.getLeft();
-                return fds(left, nodeValue);
+                return internalCalculateDepth(left, nodeValue);
             } else {
                 BinaryTreeNode<Integer> right = node.getRight();
-                return fds(right, nodeValue);
+                return internalCalculateDepth(right, nodeValue);
             }
         }
     }
     // end::calculateDepth[]
 
-    private static int fds(BinaryTreeNode<Integer> node, int nodeValue) {
+    private static int internalCalculateDepth(BinaryTreeNode<Integer> node, int nodeValue) {
         if (node == null) {
             throw new TreeException("Value not found in tree!");
         } else {
