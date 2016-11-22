@@ -15,19 +15,32 @@ public class SavingsAccount {
                 counterAccount.charAt(i));
         }
         if (sum % 11 == 0) {
-            // 2. Look up counter account and make transfer object:
-            CheckingAccount acct = Accounts.findAcctByNumber(counterAccount);
-            Transfer result = new Transfer(this, acct, amount); // <2>
-            // 3. Check whether withdrawal is to registered counter account:
-            if (result.getCounterAccount().equals(this.registeredCounterAccount)) 
-            {
-                return result;
-            } else {
-                throw new BusinessException("Counter-account not registered!");
-            }
+            Transfer result = makeTransferObject(counterAccount, amount);
+            return checkIfWithdrawalIsToRegisterCounterAccount(result);
+
         } else {
             throw new BusinessException("Invalid account number!!");
         }
     }
+
+    private Transfer makeTransferObject(String counterAccount, Money amount) {
+        // 2. Look up counter account and make transfer object:
+        CheckingAccount acct = Accounts.findAcctByNumber(counterAccount);
+        Transfer result = new Transfer(this, acct, amount); // <2>
+        return result;
+    }
+
+    private Transfer checkIfWithdrawalIsToRegisterCounterAccount(Transfer result) throws BusinessException{
+        // 3. Check whether withdrawal is to registered counter account:
+        if (result.getCounterAccount().equals(this.registeredCounterAccount))
+        {
+            return result;
+        } else {
+            throw new BusinessException("Counter-account not registered!");
+        }
+    }
+
+
+
 }
 // end::SavingsAccount[]

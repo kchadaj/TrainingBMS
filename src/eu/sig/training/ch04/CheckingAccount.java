@@ -8,10 +8,9 @@ public class CheckingAccount {
 
     public Transfer makeTransfer(String counterAccount, Money amount)
         throws BusinessException {
-        // 1. Check withdrawal limit:
-        if (amount.greaterThan(this.transferLimit)) {
-            throw new BusinessException("Limit exceeded!");
-        }
+
+        checkWithdrawalLimit(amount);
+
         // 2. Assuming result is 9-digit bank account number, validate 11-test:
         int sum = 0;
         for (int i = 0; i < counterAccount.length(); i++) {
@@ -19,13 +18,25 @@ public class CheckingAccount {
                 counterAccount.charAt(i));
         }
         if (sum % 11 == 0) {
-            // 3. Look up counter account and make transfer object:
-            CheckingAccount acct = Accounts.findAcctByNumber(counterAccount);
-            Transfer result = new Transfer(this, acct, amount);
-            return result;
+            return lookUpCounterAccountAndMakeTransferObject(counterAccount, amount);
         } else {
             throw new BusinessException("Invalid account number!");
         }
     }
+
+    private void checkWithdrawalLimit(Money amount) throws BusinessException{
+        // 1. Check withdrawal limit:
+        if (amount.greaterThan(this.transferLimit)) {
+            throw new BusinessException("Limit exceeded!");
+        }
+    }
+
+    private Transfer lookUpCounterAccountAndMakeTransferObject(String counterAccount, Money amount) {
+        CheckingAccount acct = Accounts.findAcctByNumber(counterAccount);
+        Transfer result = new Transfer(this, acct, amount);
+        return result;
+    }
+
+
 }
 // end::CheckingAccount[]
