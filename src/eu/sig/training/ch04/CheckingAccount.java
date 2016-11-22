@@ -3,7 +3,7 @@ package eu.sig.training.ch04;
 import eu.sig.training.ch04.Money;
 
 // tag::CheckingAccount[]
-public class CheckingAccount {
+public class CheckingAccount extends Accounts{
     private int transferLimit = 100;
 
     public Transfer makeTransfer(String counterAccount, Money amount)
@@ -11,13 +11,9 @@ public class CheckingAccount {
 
         checkWithdrawalLimit(amount);
 
-        // 2. Assuming result is 9-digit bank account number, validate 11-test:
-        int sum = 0;
-        for (int i = 0; i < counterAccount.length(); i++) {
-            sum = sum + (9-i) * Character.getNumericValue(
-                counterAccount.charAt(i));
-        }
-        if (sum % 11 == 0) {
+        boolean valid = isValid(counterAccount);
+
+        if (valid) {
             return lookUpCounterAccountAndMakeTransferObject(counterAccount, amount);
         } else {
             throw new BusinessException("Invalid account number!");
@@ -25,7 +21,6 @@ public class CheckingAccount {
     }
 
     private void checkWithdrawalLimit(Money amount) throws BusinessException{
-        // 1. Check withdrawal limit:
         if (amount.greaterThan(this.transferLimit)) {
             throw new BusinessException("Limit exceeded!");
         }
